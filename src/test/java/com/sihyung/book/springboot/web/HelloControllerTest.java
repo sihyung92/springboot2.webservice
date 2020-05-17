@@ -1,5 +1,6 @@
 package com.sihyung.book.springboot.web;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +28,24 @@ public class HelloControllerTest {
 
     @Test
     public void hello가_리턴된다() throws Exception {
-        String hello="hello";
+        String hello = "hello";
 
         mvc.perform(MockMvcRequestBuilders.get("/hello")) // mock mvc를 통하여 Http get 요청을 한다.
                 .andExpect(MockMvcResultMatchers.status().isOk()) // 결과검증, 200(isOk) 뿐만 아니라 다양한 검증을 할 수 있다.
                 .andExpect(MockMvcResultMatchers.content().string(hello)); // 본문의 내용 검증
+    }
+
+    @Test
+    public void helloDto가_리턴된다() throws Exception {
+        String name = "hello";
+        int amount = 1000;
+
+        mvc.perform(
+                MockMvcRequestBuilders.get("/hello/dto")
+                        .param("name", name)
+                        .param("amount", String.valueOf(amount)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name", Matchers.is(name)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.amount", Matchers.is(amount)));
     }
 }
